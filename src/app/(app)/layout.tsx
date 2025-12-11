@@ -1,10 +1,17 @@
+import { auth } from '@/auth'
 import { Nav } from './nav'
+import { SessionProvider } from 'next-auth/react'
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const session = await auth()
   return (
-    <div>
+    <SessionProvider session={session}>
       <Nav />
       {children}
-    </div>
+    </SessionProvider>
   )
 }
