@@ -4,6 +4,23 @@ import { NextResponse } from 'next/server'
 import { User } from 'next-auth'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { JWT } from 'next-auth/jwt'
+import { createorGetUser } from './lib/db-queries'
+
+declare module 'next-auth' {
+  interface User {
+    username?: string
+  }
+
+  interface Session {
+    user: User
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT extends User {
+    username?: string
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [GitHub],
@@ -13,7 +30,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const isLoggedIn = !!auth?.user
       const { pathname } = req.nextUrl
       const isAPublicRoute = PUBLIC_ROUTES.some(path => path === pathname)
-      console.log(isLoggedIn, pathname, isAPublicRoute)
       if (isLoggedIn && isAPublicRoute) {
         const searchParams = req.nextUrl.searchParams
         const callbackURL = searchParams.get('callbackUrl')
@@ -23,6 +39,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return NextResponse.redirect(new URL(`/playground`, req.url))
       }
       return isLoggedIn || isAPublicRoute
+    },
+    async signIn({ user, profile, account }) {
+      if (account?.provider === 'github' && profile) {
+        const { email, name, login } = profile
+        if (!email || !name) return false
+        const dbUser = await createorGetUser(email, name)
+        if (!dbUser) return false
+        const { id } = dbUser
+        user.id = id
+        user.username = login as string
+        return true
+      } else return false
     },
     async jwt({ token, user }) {
       if (user) {
