@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { RotatingLines } from 'react-loader-spinner'
+import { RotatingLines } from "react-loader-spinner";
 
 export function Spinner({
   strokeColor,
   width,
   strokeWidth,
 }: {
-  strokeColor?: string
-  width?: string
-  strokeWidth?: string
+  strokeColor?: string;
+  width?: string;
+  strokeWidth?: string;
 }) {
   return (
     <RotatingLines
-      strokeColor={strokeColor || 'hsl(var(--gold))'}
-      strokeWidth={strokeWidth || '4'}
-      width={width || '16'}
+      strokeColor={strokeColor || "hsl(var(--gold))"}
+      strokeWidth={strokeWidth || "4"}
+      width={width || "16"}
       height={16}
     />
-  )
+  );
 }
