@@ -23,14 +23,22 @@ model User {
 }
 
 model Agent {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  purpose   String
-  instruction String
-  capabilities String[]
-  constraints String[]
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id            String    @id @default(uuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  purpose       String
+  instruction   String
+  capabilities  String[]
+  constraints   String[]
+  tools         String[]  @default([])
+  model         String    @default("gemini-2.5-flash")
+  temperature   Float     @default(0.7)
+  maxTokens     Int       @default(2048)
+  topP          Float     @default(0.9)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  isDeployed   Boolean   @default(false)
+  deployedAt   DateTime?
+  requestCount Int       @default(0)
 }
