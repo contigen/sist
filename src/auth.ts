@@ -1,9 +1,6 @@
-import NextAuth from 'next-auth'
-import GitHub from 'next-auth/providers/github'
 import { NextResponse } from 'next/server'
-import { User } from 'next-auth'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { JWT } from 'next-auth/jwt'
+import NextAuth, { type User } from 'next-auth'
+import GitHub from 'next-auth/providers/github'
 import { createorGetUser } from './lib/db-queries'
 
 declare module 'next-auth' {
